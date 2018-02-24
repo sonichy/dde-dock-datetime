@@ -32,7 +32,7 @@
 
 DatetimeWidget::DatetimeWidget(QWidget *parent)
     : QWidget(parent),
-    m_settings("deepin", "dde-dock-datetime"),
+    m_settings("deepin", "dde-dock-datetime1"),
     m_24HourFormat(m_settings.value("24HourFormat", true).toBool())
 {
 
@@ -95,7 +95,7 @@ void DatetimeWidget::paintEvent(QPaintEvent *e)
         QString format;
         if (m_24HourFormat)
             // format = "hh:mm";
-            format = "yyyy-MM-dd\nHH:mm ddd";
+            format = "yyyy/M/dd\nHH:mm ddd";
         else
         {
             if (position == Dock::Top || position == Dock::Bottom)

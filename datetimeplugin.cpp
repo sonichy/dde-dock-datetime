@@ -29,7 +29,7 @@ DatetimePlugin::DatetimePlugin(QObject *parent)
       m_dateTipsLabel(new QLabel),
       m_refershTimer(new QTimer(this))
 {
-    m_dateTipsLabel->setObjectName("datetime");
+    m_dateTipsLabel->setObjectName("datetime1");
     m_dateTipsLabel->setStyleSheet("color:white; padding:0px 3px;");
 
     m_refershTimer->setInterval(1000);
@@ -51,12 +51,12 @@ DatetimePlugin::DatetimePlugin(QObject *parent)
 
 const QString DatetimePlugin::pluginName() const
 {
-    return "datetime";
+    return "datetime1";
 }
 
 const QString DatetimePlugin::pluginDisplayName() const
 {
-    return tr("Datetime");
+    return tr("Datetime1");
 }
 
 void DatetimePlugin::init(PluginProxyInterface *proxyInter)

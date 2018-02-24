@@ -9,7 +9,8 @@ PKGCONFIG       +=
 #TARGET          = $$qtLibraryTarget(datetime)
 TARGET           = datetime1
 #DESTDIR          = $$_PRO_FILE_PWD_/../
-DISTFILES       += datetime.json
+DISTFILES       += \
+    datetime1.json
 
 HEADERS += \
     datetimeplugin.h \
