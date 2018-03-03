@@ -10,7 +10,7 @@ PKGCONFIG       +=
 TARGET           = datetime1
 #DESTDIR          = $$_PRO_FILE_PWD_/../
 DISTFILES       += \
-    datetime1.json
+    datetime.json
 
 HEADERS += \
     datetimeplugin.h \

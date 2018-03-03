@@ -95,7 +95,7 @@ void DatetimeWidget::paintEvent(QPaintEvent *e)
         QString format;
         if (m_24HourFormat)
             // format = "hh:mm";
-            format = "yyyy/M/dd\nHH:mm ddd";
+            format = "yyyy/M/d\nHH:mm ddd";
         else
         {
             if (position == Dock::Top || position == Dock::Bottom)
