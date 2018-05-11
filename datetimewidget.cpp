@@ -62,13 +62,12 @@ void DatetimeWidget::toggleHourFormat()
 
 QSize DatetimeWidget::sizeHint() const
 {
-    QFontMetrics fm(qApp->font());
+    QFontMetrics FM(qApp->font());
 
     if (m_24HourFormat)
-        //return fm.boundingRect("88:88").size() + QSize(20, 10);
-        return fm.boundingRect("yyyy-MM-dd").size() + QSize(0, 0);
+        return FM.boundingRect("yyyy-MM-dd").size() + QSize(0, FM.boundingRect("HH:mm ddd").height());
     else
-        return fm.boundingRect("88:88 A.A.").size() + QSize(20, 20);
+        return FM.boundingRect("88:88 A.A.").size() + QSize(20, 20);
 }
 
 void DatetimeWidget::resizeEvent(QResizeEvent *e)
