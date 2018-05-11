@@ -44,9 +44,8 @@ DatetimePlugin::DatetimePlugin(QObject *parent)
 
     calendar = new QCalendarWidget;
     calendar->setWindowFlags(Qt::Tool | Qt::WindowStaysOnTopHint);
-//    calendar->show();
-//    calendar->move(QApplication::desktop()->width() - calendar->width(), QApplication::desktop()->height() - calendar->height() + 130);
-//    calendar->hide();
+    calendar->show();
+    calendar->hide();
 }
 
 const QString DatetimePlugin::pluginName() const
