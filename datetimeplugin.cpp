@@ -55,7 +55,7 @@ const QString DatetimePlugin::pluginName() const
 
 const QString DatetimePlugin::pluginDisplayName() const
 {
-    return tr("Datetime1");
+    return tr("日期时间");
 }
 
 void DatetimePlugin::init(PluginProxyInterface *proxyInter)
