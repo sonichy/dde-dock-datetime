@@ -14,11 +14,13 @@ DISTFILES       += \
 
 HEADERS += \
     datetimeplugin.h \
-    datetimewidget.h
+    datetimewidget.h \
+    calendarwidget.h
 
 SOURCES += \
     datetimeplugin.cpp \
-    datetimewidget.cpp
+    datetimewidget.cpp \
+    calendarwidget.cpp
 
 target.path = $${PREFIX}/lib/dde-dock/plugins/
 INSTALLS += target

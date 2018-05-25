@@ -105,7 +105,7 @@ void DatetimeWidget::paintEvent(QPaintEvent *e)
 
         painter.setPen(Qt::white);
         //painter.drawText(rect(), Qt::AlignTop, current.time().toString(format));
-        painter.drawText(rect(), Qt::AlignCenter, current.toString(format)); // + "\n戊戌狗年 正月初四 雨水 13°C"
+        painter.drawText(rect(), Qt::AlignCenter, current.toString(format));
         return;
     }
 

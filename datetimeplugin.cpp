@@ -42,10 +42,8 @@ DatetimePlugin::DatetimePlugin(QObject *parent)
 
     connect(m_refershTimer, &QTimer::timeout, this, &DatetimePlugin::updateCurrentTimeString);
 
-    calendar = new QCalendarWidget;
-    calendar->setWindowFlags(Qt::Tool | Qt::WindowStaysOnTopHint);
-    calendar->show();
-    calendar->hide();
+    calendarApplet = new CalendarWidget;
+
 }
 
 const QString DatetimePlugin::pluginName() const
@@ -101,13 +99,11 @@ QWidget *DatetimePlugin::itemTipsWidget(const QString &itemKey)
     return m_dateTipsLabel;
 }
 
-const QString DatetimePlugin::itemCommand(const QString &itemKey)
+QWidget *DatetimePlugin::itemPopupApplet(const QString &itemKey)
 {
     Q_UNUSED(itemKey);
-    //return "dbus-send --print-reply --dest=com.deepin.Calendar /com/deepin/Calendar com.deepin.Calendar.RaiseWindow";
-    calendar->move(QApplication::desktop()->width() - calendar->width(), QApplication::desktop()->height() - calendar->height() + 130);
-    calendar->show();
-    return "";
+    //calendarApplet->calendar->setSelectedDate(QDate::currentDate());
+    return calendarApplet;
 }
 
 const QString DatetimePlugin::itemContextMenu(const QString &itemKey)

@@ -24,7 +24,7 @@
 
 #include "pluginsiteminterface.h"
 #include "datetimewidget.h"
-
+#include "calendarwidget.h"
 #include <QTimer>
 #include <QLabel>
 #include <QCalendarWidget>
@@ -33,7 +33,7 @@ class DatetimePlugin : public QObject, PluginsItemInterface
 {
     Q_OBJECT
     Q_INTERFACES(PluginsItemInterface)
-    Q_PLUGIN_METADATA(IID "com.deepin.dock.PluginsItemInterface" FILE "datetime1.json")
+    Q_PLUGIN_METADATA(IID "com.deepin.dock.PluginsItemInterface" FILE "datetime.json")
 
 public:
     explicit DatetimePlugin(QObject *parent = 0);
@@ -50,8 +50,8 @@ public:
 
     QWidget *itemWidget(const QString &itemKey) override;
     QWidget *itemTipsWidget(const QString &itemKey) override;
+    QWidget *itemPopupApplet(const QString &itemKey);
 
-    const QString itemCommand(const QString &itemKey) override;
     const QString itemContextMenu(const QString &itemKey) override;
 
     void invokedMenuItem(const QString &itemKey, const QString &menuId, const bool checked) override;
@@ -64,7 +64,7 @@ private:
     QPointer<QLabel> m_dateTipsLabel;
     QTimer *m_refershTimer;
     QString m_currentTimeString;
-    QCalendarWidget *calendar;
+    CalendarWidget *calendarApplet;
 };
 
 #endif // DATETIMEPLUGIN_H
