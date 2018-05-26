@@ -14,6 +14,7 @@ public:
 signals:
 
 public slots:
+    void jumpToToday();
 };
 
 #endif // CALENDARWIDGET_H

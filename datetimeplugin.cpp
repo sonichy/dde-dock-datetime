@@ -101,8 +101,7 @@ QWidget *DatetimePlugin::itemTipsWidget(const QString &itemKey)
 
 QWidget *DatetimePlugin::itemPopupApplet(const QString &itemKey)
 {
-    Q_UNUSED(itemKey);
-    //calendarApplet->calendar->setSelectedDate(QDate::currentDate());
+    Q_UNUSED(itemKey);    
     return calendarApplet;
 }
 
