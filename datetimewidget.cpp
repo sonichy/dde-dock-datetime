@@ -19,9 +19,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "dde-dock/constants.h"
 #include "datetimewidget.h"
-#include "constants.h"
-
 #include <QApplication>
 #include <QPainter>
 #include <QDebug>
@@ -51,19 +50,15 @@ void DatetimeWidget::setEnabled(const bool b)
 void DatetimeWidget::toggleHourFormat()
 {
     m_24HourFormat = !m_24HourFormat;
-
     m_settings.setValue("24HourFormat", m_24HourFormat);
-
     m_cachedTime.clear();
     update();
-
     emit requestUpdateGeometry();
 }
 
 QSize DatetimeWidget::sizeHint() const
 {
     QFontMetrics FM(qApp->font());
-
     if (m_24HourFormat)
         return FM.boundingRect("yyyy-MM-dd").size() + QSize(0, FM.boundingRect("HH:mm ddd").height());
     else
@@ -73,7 +68,6 @@ QSize DatetimeWidget::sizeHint() const
 void DatetimeWidget::resizeEvent(QResizeEvent *e)
 {
     m_cachedTime.clear();
-
     QWidget::resizeEvent(e);
 }
 

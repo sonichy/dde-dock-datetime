@@ -22,7 +22,7 @@
 #ifndef DATETIMEPLUGIN_H
 #define DATETIMEPLUGIN_H
 
-#include "pluginsiteminterface.h"
+#include "dde-dock/pluginsiteminterface.h"
 #include "datetimewidget.h"
 #include "calendarwidget.h"
 #include <QTimer>
@@ -46,7 +46,8 @@ public:
     bool pluginIsAllowDisable() override { return true; }
     bool pluginIsDisable() override;
 
-    int itemSortKey(const QString &itemKey) override;
+    int itemSortKey(const QString &itemKey);
+    void setSortKey(const QString &itemKey, const int order);
 
     QWidget *itemWidget(const QString &itemKey) override;
     QWidget *itemTipsWidget(const QString &itemKey) override;
@@ -64,6 +65,7 @@ private:
     QPointer<QLabel> m_dateTipsLabel;
     QTimer *m_refershTimer;
     QString m_currentTimeString;
+    QSettings m_settings;
     CalendarWidget *calendarApplet;
 };
 

@@ -27,7 +27,8 @@
 DatetimePlugin::DatetimePlugin(QObject *parent)
     : QObject(parent),
       m_dateTipsLabel(new QLabel),
-      m_refershTimer(new QTimer(this))
+      m_refershTimer(new QTimer(this)),
+      m_settings("deepin", "dde-dock-datetime1")
 {
     m_dateTipsLabel->setObjectName("datetime1");
     m_dateTipsLabel->setStyleSheet("color:white; padding:0px 3px;");
@@ -82,7 +83,17 @@ bool DatetimePlugin::pluginIsDisable()
 int DatetimePlugin::itemSortKey(const QString &itemKey)
 {
     Q_UNUSED(itemKey);
-    return -1;
+
+    const QString key = QString("pos_%1").arg(displayMode());
+    return m_settings.value(key, 0).toInt();
+}
+
+void DatetimePlugin::setSortKey(const QString &itemKey, const int order)
+{
+    Q_UNUSED(itemKey);
+
+    const QString key = QString("pos_%1").arg(displayMode());
+    m_settings.setValue(key, order);
 }
 
 QWidget *DatetimePlugin::itemWidget(const QString &itemKey)
