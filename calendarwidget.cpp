@@ -4,7 +4,7 @@
 #include <QPushButton>
 
 CalendarWidget::CalendarWidget(QWidget *parent) : QWidget(parent)
-{    
+{
     QVBoxLayout *vbox = new QVBoxLayout;
     QHBoxLayout *hbox = new QHBoxLayout;
     hbox->addStretch();
@@ -14,6 +14,7 @@ CalendarWidget::CalendarWidget(QWidget *parent) : QWidget(parent)
     hbox->addWidget(pushButton_today);
     vbox->addLayout(hbox);
     calendar = new QCalendarWidget;
+    calendar->setStyleSheet("QTableView { alternate-background-color:#101010; }");
     vbox->addWidget(calendar);
     setLayout(vbox);
 }
