@@ -98,7 +98,6 @@ void DatetimeWidget::paintEvent(QPaintEvent *e)
         }
 
         painter.setPen(Qt::white);
-        //painter.drawText(rect(), Qt::AlignTop, current.time().toString(format));
         painter.drawText(rect(), Qt::AlignCenter, current.toString(format));
         return;
     }
