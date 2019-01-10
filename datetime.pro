@@ -1,16 +1,9 @@
-
-#include(../dde-dock/interfaces/)
-
 QT              += widgets svg
 TEMPLATE         = lib
-CONFIG          += plugin c++11 link_pkgconfig
-PKGCONFIG       +=
+CONFIG          += plugin c++11
 
-#TARGET          = $$qtLibraryTarget(datetime)
 TARGET           = datetime1
-#DESTDIR          = $$_PRO_FILE_PWD_/../
-DISTFILES       += \
-    datetime.json
+DISTFILES       += datetime.json
 
 HEADERS += \
     datetimeplugin.h \
@@ -22,8 +15,4 @@ SOURCES += \
     datetimewidget.cpp \
     calendarwidget.cpp
 
-target.path = $${PREFIX}/lib/dde-dock/plugins/
-INSTALLS += target
-
-RESOURCES += \
-    resources.qrc
+RESOURCES += resources.qrc
