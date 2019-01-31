@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QCalendarWidget>
+#include <QLabel>
 
 class CalendarWidget : public QWidget
 {
@@ -10,11 +11,14 @@ class CalendarWidget : public QWidget
 public:
     explicit CalendarWidget(QWidget *parent = nullptr);
     QCalendarWidget *calendar;
+    QLabel *label;
 
 signals:
 
 public slots:
     void jumpToToday();
+    void drawClock();
+
 };
 
 #endif // CALENDARWIDGET_H
