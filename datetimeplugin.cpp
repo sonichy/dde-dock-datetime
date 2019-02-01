@@ -120,7 +120,7 @@ const QString DatetimePlugin::itemContextMenu(const QString &itemKey)
     Q_UNUSED(itemKey);
 
     QList<QVariant> items;
-    items.reserve(1);
+    items.reserve(2);
 
     QMap<QString, QVariant> settings;
     settings["itemId"] = "settings";
@@ -137,6 +137,12 @@ const QString DatetimePlugin::itemContextMenu(const QString &itemKey)
     open["isActive"] = true;
     items.push_back(open);
 
+    QMap<QString, QVariant> clock;
+    clock["itemId"] = "clock";
+    clock["itemText"] = tr("Clock");
+    clock["isActive"] = true;
+    items.push_back(clock);
+
     QMap<QString, QVariant> menu;
     menu["items"] = items;
     menu["checkableMenu"] = false;
@@ -152,6 +158,8 @@ void DatetimePlugin::invokedMenuItem(const QString &itemKey, const QString &menu
 
     if (menuId == "open")
         QProcess::startDetached("dbus-send --print-reply --dest=com.deepin.dde.ControlCenter /com/deepin/dde/ControlCenter com.deepin.dde.ControlCenter.ShowModule \"string:datetime\"");
+    if (menuId == "clock")
+        m_centralWidget->toggleClock();
     else
         m_centralWidget->toggleHourFormat();
 }
@@ -167,8 +175,8 @@ void DatetimePlugin::updateCurrentTimeString()
 
     const QString currentString = currentDateTime.toString("mm");
 
-    if (currentString == m_currentTimeString)
-        return;
+    //if (currentString == m_currentTimeString)
+    //    return;
 
     m_currentTimeString = currentString;
     m_centralWidget->update();

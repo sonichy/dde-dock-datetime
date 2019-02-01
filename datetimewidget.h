@@ -42,6 +42,7 @@ signals:
 
 public slots:
     void toggleHourFormat();
+    void toggleClock();
 
 private:
     QSize sizeHint() const;
