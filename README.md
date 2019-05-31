@@ -11,7 +11,7 @@
 开发依赖：  
 sudo apt-get install dde-dock-dev
 
-### 1.3
+### V1.3
 时间格式可以设置  
 ![alt](format.jpg)  
 
