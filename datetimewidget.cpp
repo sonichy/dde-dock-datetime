@@ -65,8 +65,18 @@ void DatetimeWidget::toggleClock()
 QSize DatetimeWidget::sizeHint() const
 {
     QFontMetrics FM(qApp->font());
-    if (m_24HourFormat)
-        return FM.boundingRect("yyyy-MM-dd").size() + QSize(0, FM.boundingRect("HH:mm ddd").height());
+    if (m_24HourFormat){
+        QString format = m_settings.value("format","yyyy/M/d\nHH:mm ddd").toString();
+        if(format.contains("\\n")){
+            QStringList SL = format.split("\\n");
+            if(SL.at(0).length() > SL.at(1).length())
+                return FM.boundingRect(SL.at(0)).size() + QSize(0, FM.boundingRect(SL.at(1)).height());
+            else
+                return FM.boundingRect(SL.at(1)).size() + QSize(0, FM.boundingRect(SL.at(1)).height());
+        }else
+            //return FM.boundingRect("yyyy-MM-dd").size() + QSize(0, FM.boundingRect("HH:mm ddd").height());
+            return FM.boundingRect(format).size() + QSize(0, FM.boundingRect(format).height());
+    }
     else
         return FM.boundingRect("88:88 A.A.").size() + QSize(20, 20);
 }
@@ -94,7 +104,7 @@ void DatetimeWidget::paintEvent(QPaintEvent *e)
         QString format;
         if (m_24HourFormat)
             // format = "hh:mm";
-            format = "yyyy/M/d\nHH:mm ddd";
+            format = m_settings.value("format","yyyy/M/d\nHH:mm ddd").toString().replace("\\n","\n");
         else
         {
             if (position == Dock::Top || position == Dock::Bottom)

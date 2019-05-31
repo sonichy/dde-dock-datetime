@@ -67,6 +67,8 @@ private:
     QString m_currentTimeString;
     QSettings m_settings;
     CalendarWidget *calendarApplet;
+    void set();
+
 };
 
 #endif // DATETIMEPLUGIN_H

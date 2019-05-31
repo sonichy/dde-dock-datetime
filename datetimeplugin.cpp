@@ -23,6 +23,11 @@
 #include <QLabel>
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QDialog>
+#include <QLineEdit>
+#include <QComboBox>
+#include <QPushButton>
+#include <QHBoxLayout>
 
 DatetimePlugin::DatetimePlugin(QObject *parent)
     : QObject(parent),
@@ -120,7 +125,13 @@ const QString DatetimePlugin::itemContextMenu(const QString &itemKey)
     Q_UNUSED(itemKey);
 
     QList<QVariant> items;
-    items.reserve(2);
+    items.reserve(4);
+
+    QMap<QString, QVariant> set;
+    set["itemId"] = "set";
+    set["itemText"] = tr("Set");
+    set["isActive"] = true;
+    items.push_back(set);
 
     QMap<QString, QVariant> settings;
     settings["itemId"] = "settings";
@@ -160,7 +171,9 @@ void DatetimePlugin::invokedMenuItem(const QString &itemKey, const QString &menu
         QProcess::startDetached("dbus-send --print-reply --dest=com.deepin.dde.ControlCenter /com/deepin/dde/ControlCenter com.deepin.dde.ControlCenter.ShowModule \"string:datetime\"");
     if (menuId == "clock")
         m_centralWidget->toggleClock();
-    else
+    if (menuId == "set")
+        set();
+    if (menuId == "settings")
         m_centralWidget->toggleHourFormat();
 }
 
@@ -180,4 +193,41 @@ void DatetimePlugin::updateCurrentTimeString()
 
     m_currentTimeString = currentString;
     m_centralWidget->update();
+}
+
+void DatetimePlugin::set()
+{
+    QDialog *dialog = new QDialog;
+    dialog->setWindowTitle("Set");
+    dialog->setFixedWidth(300);
+    QVBoxLayout *vbox = new QVBoxLayout;
+    QHBoxLayout *hbox = new QHBoxLayout;
+    QLabel *label = new QLabel("Format");
+    hbox->addWidget(label);
+    QLineEdit *lineEdit_format = new QLineEdit;
+    lineEdit_format->setText(m_settings.value("format","yyyy/M/d\\nHH:mm ddd").toString());
+    hbox->addWidget(lineEdit_format);
+    vbox->addLayout(hbox);
+
+    hbox = new QHBoxLayout;
+    label = new QLabel("Such as:");
+    hbox->addWidget(label);
+    label = new QLabel("yyyy/M/d\\nHH:mm ddd\nHH:mm ddd\\nyyyy/M/d");
+    hbox->addWidget(label);
+    vbox->addLayout(hbox);
+
+    hbox = new QHBoxLayout;
+    QPushButton *pushButton_confirm = new QPushButton("Confirm");
+    QPushButton *pushButton_cancel = new QPushButton("Cancel");
+    connect(pushButton_confirm, SIGNAL(clicked()), dialog, SLOT(accept()));
+    connect(pushButton_cancel, SIGNAL(clicked()), dialog, SLOT(reject()));
+    hbox->addWidget(pushButton_confirm);
+    hbox->addWidget(pushButton_cancel);
+    vbox->addLayout(hbox);
+    dialog->setLayout(vbox);
+    if(dialog->exec() == QDialog::Accepted){
+        m_settings.setValue("format", lineEdit_format->text());
+        m_centralWidget->update();
+    }
+    dialog->close();
 }
