@@ -181,10 +181,14 @@ void DatetimePlugin::updateCurrentTimeString()
 {
     const QDateTime currentDateTime = QDateTime::currentDateTime();
 
-    if (m_centralWidget->is24HourFormat())
-        m_dateTipsLabel->setText(currentDateTime.date().toString(Qt::SystemLocaleLongDate) + currentDateTime.toString(" HH:mm:ss"));
-    else
-        m_dateTipsLabel->setText(currentDateTime.date().toString(Qt::SystemLocaleLongDate) + currentDateTime.toString(" hh:mm:ss A"));
+    if(m_settings.value("tooltip", "").toString() == ""){
+        if (m_centralWidget->is24HourFormat())
+            m_dateTipsLabel->setText(currentDateTime.date().toString(Qt::SystemLocaleLongDate) + currentDateTime.toString(" HH:mm:ss"));
+        else
+            m_dateTipsLabel->setText(currentDateTime.date().toString(Qt::SystemLocaleLongDate) + currentDateTime.toString(" hh:mm:ss A"));
+    }else{
+        m_dateTipsLabel->setText(m_settings.value("tooltip", "").toString().replace("\\n", "\n"));
+    }
 
     const QString currentString = currentDateTime.toString("mm");
 
@@ -198,35 +202,46 @@ void DatetimePlugin::updateCurrentTimeString()
 void DatetimePlugin::set()
 {
     QDialog *dialog = new QDialog;
-    dialog->setWindowTitle("Set");
+    dialog->setWindowTitle(tr("Set"));
     dialog->setFixedWidth(300);
     QVBoxLayout *vbox = new QVBoxLayout;
     QHBoxLayout *hbox = new QHBoxLayout;
-    QLabel *label = new QLabel("Format");
+    QLabel *label = new QLabel(tr("Format"));
     hbox->addWidget(label);
     QLineEdit *lineEdit_format = new QLineEdit;
-    lineEdit_format->setText(m_settings.value("format","yyyy/M/d\\nHH:mm ddd").toString());
+    lineEdit_format->setText(m_settings.value("format", "yyyy/M/d\\nHH:mm ddd").toString());
     hbox->addWidget(lineEdit_format);
     vbox->addLayout(hbox);
 
     hbox = new QHBoxLayout;
-    label = new QLabel("Such as:");
+    label = new QLabel(tr("Such as"));
     hbox->addWidget(label);
     label = new QLabel("yyyy/M/d\\nHH:mm ddd\nHH:mm ddd\\nyyyy/M/d");
     hbox->addWidget(label);
     vbox->addLayout(hbox);
 
     hbox = new QHBoxLayout;
-    QPushButton *pushButton_confirm = new QPushButton("Confirm");
-    QPushButton *pushButton_cancel = new QPushButton("Cancel");
+    label = new QLabel(tr("Tooltip"));
+    hbox->addWidget(label);
+    QLineEdit *lineEdit_tooltip = new QLineEdit;
+    lineEdit_tooltip->setText(m_settings.value("tooltip", "").toString());
+    hbox->addWidget(lineEdit_tooltip);
+    vbox->addLayout(hbox);
+
+    hbox = new QHBoxLayout;
+    hbox->addStretch();
+    QPushButton *pushButton_confirm = new QPushButton(tr("Confirm"));
+    QPushButton *pushButton_cancel = new QPushButton(tr("Cancel"));
     connect(pushButton_confirm, SIGNAL(clicked()), dialog, SLOT(accept()));
     connect(pushButton_cancel, SIGNAL(clicked()), dialog, SLOT(reject()));
     hbox->addWidget(pushButton_confirm);
     hbox->addWidget(pushButton_cancel);
+    hbox->addStretch();
     vbox->addLayout(hbox);
     dialog->setLayout(vbox);
     if(dialog->exec() == QDialog::Accepted){
         m_settings.setValue("format", lineEdit_format->text());
+        m_settings.setValue("tooltip", lineEdit_tooltip->text());
         m_centralWidget->update();
     }
     dialog->close();
