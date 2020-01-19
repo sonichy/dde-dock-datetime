@@ -187,7 +187,25 @@ void DatetimePlugin::updateCurrentTimeString()
         else
             m_dateTipsLabel->setText(currentDateTime.date().toString(Qt::SystemLocaleLongDate) + currentDateTime.toString(" hh:mm:ss A"));
     }else{
-        m_dateTipsLabel->setText(m_settings.value("tooltip", "").toString().replace("\\n", "\n"));
+        QString s = m_settings.value("tooltip", "").toString();
+        if(s.contains("[") && s.contains("]") && s.indexOf("[") < s.indexOf("]")){
+            QString stime1 = s.mid(s.indexOf("[")+1, s.indexOf("]") - s.indexOf("[") -1);
+            QDateTime time1 = QDateTime::fromString(stime1, "yyyy-MM-dd hh:mm:ss");
+            QDateTime time0 = QDateTime::currentDateTime();
+            qint64 ms = time1.msecsTo(time0);
+            QTime t(0,0,0);
+            t = t.addMSecs(ms);
+            qint64 days = time0.daysTo(time1);
+            QString sd = " ";
+            if(days>0)
+                sd += QString::number(days) + " 天";
+            sd += t.toString(" h 时 m 分 s 秒");
+            QString stip = s.replace(QRegExp("\\[.*\\]"), sd);
+            //QString stip = stime1 + "\n" + s + sd;
+            m_dateTipsLabel->setText(stip.replace("\\n", "\n"));
+        }else{
+            m_dateTipsLabel->setText(s.replace("\\n", "\n"));
+        }
     }
 
     const QString currentString = currentDateTime.toString("mm");
@@ -203,7 +221,7 @@ void DatetimePlugin::set()
 {
     QDialog *dialog = new QDialog;
     dialog->setWindowTitle(tr("Set"));
-    dialog->setFixedWidth(300);
+    dialog->setFixedWidth(400);
     QVBoxLayout *vbox = new QVBoxLayout;
     QHBoxLayout *hbox = new QHBoxLayout;
     QLabel *label = new QLabel(tr("Format"));
@@ -227,6 +245,9 @@ void DatetimePlugin::set()
     lineEdit_tooltip->setText(m_settings.value("tooltip", "").toString());
     hbox->addWidget(lineEdit_tooltip);
     vbox->addLayout(hbox);
+    QLineEdit *lineEdit = new QLineEdit(tr("[2020-01-25 00:00:00] format will display a count down to now"));
+    lineEdit->setReadOnly(true);
+    vbox->addWidget(lineEdit);
 
     hbox = new QHBoxLayout;
     hbox->addStretch();
