@@ -191,17 +191,16 @@ void DatetimePlugin::updateCurrentTimeString()
         if(s.contains("[") && s.contains("]") && s.indexOf("[") < s.indexOf("]")){
             QString stime1 = s.mid(s.indexOf("[")+1, s.indexOf("]") - s.indexOf("[") -1);
             QDateTime time1 = QDateTime::fromString(stime1, "yyyy-MM-dd hh:mm:ss");
-            QDateTime time0 = QDateTime::currentDateTime();
-            qint64 ms = time1.msecsTo(time0);
+            QDateTime time2 = QDateTime::currentDateTime();
+            qint64 secs = time2.secsTo(time1);
             QTime t(0,0,0);
-            t = t.addMSecs(ms);
-            qint64 days = time0.daysTo(time1);
+            t = t.addSecs(secs);
+            qint64 days = secs/60/60/24;
             QString sd = " ";
-            if(days>0)
+            if(days != 0)
                 sd += QString::number(days) + " 天";
             sd += t.toString(" h 时 m 分 s 秒");
             QString stip = s.replace(QRegExp("\\[.*\\]"), sd);
-            //QString stip = stime1 + "\n" + s + sd;
             m_dateTipsLabel->setText(stip.replace("\\n", "\n"));
         }else{
             m_dateTipsLabel->setText(s.replace("\\n", "\n"));
