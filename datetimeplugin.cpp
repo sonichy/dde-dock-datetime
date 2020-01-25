@@ -188,21 +188,29 @@ void DatetimePlugin::updateCurrentTimeString()
             m_dateTipsLabel->setText(currentDateTime.date().toString(Qt::SystemLocaleLongDate) + currentDateTime.toString(" hh:mm:ss A"));
     }else{
         QString s = m_settings.value("tooltip", "").toString();
-        if(s.contains("[") && s.contains("]") && s.indexOf("[") < s.indexOf("]")){
+        if (s.contains("[") && s.contains("]") && s.indexOf("[") < s.indexOf("]")) {
             QString stime1 = s.mid(s.indexOf("[")+1, s.indexOf("]") - s.indexOf("[") -1);
             QDateTime time1 = QDateTime::fromString(stime1, "yyyy-MM-dd hh:mm:ss");
             QDateTime time2 = QDateTime::currentDateTime();
-            qint64 secs = time2.secsTo(time1);
+            qint64 secs;
+            if(time1 > time2)
+                secs = time2.secsTo(time1);
+            else
+                secs = time1.secsTo(time2);
             QTime t(0,0,0);
             t = t.addSecs(secs);
             qint64 days = secs/60/60/24;
             QString sd = " ";
-            if(days != 0)
+            if (days != 0)
                 sd += QString::number(days) + " 天";
             sd += t.toString(" h 时 m 分 s 秒");
+            if (time1 > time2)
+                s.insert(s.indexOf("["), tr("还有"));
+            else
+                s.insert(s.indexOf("["), tr("已经过去"));
             QString stip = s.replace(QRegExp("\\[.*\\]"), sd);
             m_dateTipsLabel->setText(stip.replace("\\n", "\n"));
-        }else{
+        } else {
             m_dateTipsLabel->setText(s.replace("\\n", "\n"));
         }
     }
