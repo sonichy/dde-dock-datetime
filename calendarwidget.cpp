@@ -14,7 +14,7 @@ CalendarWidget::CalendarWidget(QWidget *parent) : QWidget(parent)
     hbox->addStretch();
     QPushButton *pushButton_today = new QPushButton("今");
     pushButton_today->setFixedWidth(30);
-    connect(pushButton_today,SIGNAL(pressed()),this,SLOT(jumpToToday()));
+    connect(pushButton_today, SIGNAL(pressed()), this, SLOT(jumpToToday()));
     hbox->addWidget(pushButton_today);
     vbox->addLayout(hbox);
     hbox = new QHBoxLayout;

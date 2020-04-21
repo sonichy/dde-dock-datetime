@@ -64,21 +64,30 @@ void DatetimeWidget::toggleClock()
 
 QSize DatetimeWidget::sizeHint() const
 {
-    QFontMetrics FM(qApp->font());
-    if (m_24HourFormat){
-        QString format = m_settings.value("format", "yyyy/M/d\nHH:mm ddd").toString();
-        if(format.contains("\\n")){
-            QStringList SL = format.split("\\n");
-            if(SL.at(0).length() > SL.at(1).length())
-                return FM.boundingRect(SL.at(0)).size() + QSize(10, FM.boundingRect(SL.at(1)).height());
-            else
-                return FM.boundingRect(SL.at(1)).size() + QSize(10, FM.boundingRect(SL.at(1)).height());
-        }else
-            //return FM.boundingRect("yyyy-MM-dd").size() + QSize(0, FM.boundingRect("HH:mm ddd").height());
-            return FM.boundingRect(format).size() + QSize(0, FM.boundingRect(format).height());
+    const Dock::DisplayMode displayMode = qApp->property(PROP_DISPLAY_MODE).value<Dock::DisplayMode>();
+    if (displayMode == Dock::Efficient) {
+        QFontMetrics FM(qApp->font());
+        if (m_24HourFormat){
+            QString format = m_settings.value("format", "yyyy/M/d\nHH:mm ddd").toString();
+            if(format.contains("\\n")){
+                QStringList SL = format.split("\\n");
+                if(SL.at(0).length() > SL.at(1).length())
+                    return FM.boundingRect(SL.at(0)).size() + QSize(10, FM.boundingRect(SL.at(1)).height());
+                else
+                    return FM.boundingRect(SL.at(1)).size() + QSize(10, FM.boundingRect(SL.at(1)).height());
+            }else
+                //return FM.boundingRect("yyyy-MM-dd").size() + QSize(0, FM.boundingRect("HH:mm ddd").height());
+                return FM.boundingRect(format).size() + QSize(0, FM.boundingRect(format).height());
+        }
+        else
+            return FM.boundingRect("88:88 A.A.").size() + QSize(20, 20);
+    }else{
+        const Dock::Position position = qApp->property(PROP_POSITION).value<Dock::Position>();
+        if (position == Dock::Top || position == Dock::Bottom)
+            return QSize(height(), height());
+        else
+            return QSize(width(), width());
     }
-    else
-        return FM.boundingRect("88:88 A.A.").size() + QSize(20, 20);
 }
 
 void DatetimeWidget::resizeEvent(QResizeEvent *e)
@@ -120,28 +129,19 @@ void DatetimeWidget::paintEvent(QPaintEvent *e)
 
     // clock
     if(m_settings.value("ShowClock",false).toBool()){
-        int w = 50;
-        int h = 50;
+        int w = qMin(width(), height());
+        int h = w;
+        QPixmap pixmap(w,h);
+        pixmap.fill(Qt::transparent);
+        QPainter painter1(&pixmap);
+        painter1.setRenderHint(QPainter::Antialiasing);
         // face
-        painter.setPen(QPen(Qt::black, w*0.02));
-        painter.setBrush(QBrush(Qt::white));
-        painter.drawEllipse(QPoint(w/2,h/2), (int)(w/2*0.9), (int)(h/2*0.9));
-        painter.setBrush(QBrush(Qt::black));
-        painter.drawEllipse(QPoint(w/2,h/2), (int)(w*0.015), (int)(h*0.015));
+        painter1.setPen(QPen(Qt::black, w*0.02));
+        painter1.setBrush(QBrush(Qt::white));
+        painter1.drawEllipse(QPoint(w/2,h/2), (int)(w/2*0.9), (int)(h/2*0.9));
+        painter1.setBrush(QBrush(Qt::black));
+        painter1.drawEllipse(QPoint(w/2,h/2), (int)(w*0.015), (int)(h*0.015));
         qreal da = 2 * M_PI / 60;
-        // mark
-        /*
-        for(int i=0; i<60; i++){
-            int r = w * 0.415;
-            if(i % 5 == 0) r = w * 0.375;
-            int x1 = r * qCos(M_PI/2 - i * da) + w/2;
-            int y1 = - r * qSin(M_PI/2 - i * da) + h/2;
-            int x2 = w * 0.425 * qCos(M_PI/2 - i * da) + w/2;
-            int y2 = - h * 0.425 * qSin(M_PI/2 - i * da) + h/2;
-            painter.setPen(QPen(Qt::black,2));
-            painter.drawLine(QPoint(x1,y1), QPoint(x2,y2));
-        }
-        */
         QTime time = QTime::currentTime();
         int hour = time.hour();
         int m = time.minute();
@@ -149,20 +149,21 @@ void DatetimeWidget::paintEvent(QPaintEvent *e)
         // second hand
         int x = w * 0.4 * qCos(M_PI/2 - s * da) + w / 2;
         int y = - h * 0.4 * qSin(M_PI/2 - s * da) + h / 2;
-        painter.setPen(QPen(Qt::black, w*0.01));
-        painter.drawLine(QPoint(w/2,h/2), QPoint(x,y));
+        painter1.setPen(QPen(Qt::black, w*0.01));
+        painter1.drawLine(QPoint(w/2,h/2), QPoint(x,y));
         // minute hand
         x = w * 0.35 * qCos(M_PI/2 - m * da - s * da / 60) + w / 2;
         y = - h * 0.35 * qSin(M_PI/2 - m * da - s * da / 60) + h / 2;
-        painter.setPen(QPen(Qt::black, w*0.02));
-        painter.drawLine(QPoint(w/2,h/2), QPoint(x,y));
+        painter1.setPen(QPen(Qt::black, w*0.02));
+        painter1.drawLine(QPoint(w/2,h/2), QPoint(x,y));
         // hour hand
         da = 2 * M_PI / 12;
         if(hour >= 12) hour -= 12;
         x = w*0.25 * qCos(M_PI/2 - hour * da - m * da / 60) + w/2;
         y = - h*0.25 * qSin(M_PI/2 - hour * da - m * da / 60) + h/2;
-        painter.setPen(QPen(Qt::black, w*0.03));
-        painter.drawLine(QPoint(w/2,h/2), QPoint(x,y));
+        painter1.setPen(QPen(Qt::black, w*0.03));
+        painter1.drawLine(QPoint(w/2,h/2), QPoint(x,y));
+        painter.drawPixmap(rect().center() - pixmap.rect().center(), pixmap);
         return;
     }
 
