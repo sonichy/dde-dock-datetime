@@ -28,6 +28,14 @@
 #include <QTimer>
 #include <QLabel>
 #include <QCalendarWidget>
+#include <QApplication>
+#include <QDesktopWidget>
+#include <QDialog>
+#include <QLineEdit>
+#include <QTextEdit>
+#include <QComboBox>
+#include <QPushButton>
+#include <QHBoxLayout>
 
 class DatetimePlugin : public QObject, PluginsItemInterface
 {

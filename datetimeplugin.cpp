@@ -20,14 +20,6 @@
  */
 
 #include "datetimeplugin.h"
-#include <QLabel>
-#include <QApplication>
-#include <QDesktopWidget>
-#include <QDialog>
-#include <QLineEdit>
-#include <QComboBox>
-#include <QPushButton>
-#include <QHBoxLayout>
 
 DatetimePlugin::DatetimePlugin(QObject *parent)
     : QObject(parent),
@@ -181,38 +173,15 @@ void DatetimePlugin::updateCurrentTimeString()
 {
     const QDateTime currentDateTime = QDateTime::currentDateTime();
 
-    if(m_settings.value("tooltip", "").toString() == ""){
+    if (m_settings.value("tooltip", "").toString() == "") {
         if (m_centralWidget->is24HourFormat())
             m_dateTipsLabel->setText(currentDateTime.date().toString(Qt::SystemLocaleLongDate) + currentDateTime.toString(" HH:mm:ss"));
         else
             m_dateTipsLabel->setText(currentDateTime.date().toString(Qt::SystemLocaleLongDate) + currentDateTime.toString(" hh:mm:ss A"));
-    }else{
+    } else {
         QString s = m_settings.value("tooltip", "").toString();
-        if (s.contains("[") && s.contains("]") && s.indexOf("[") < s.indexOf("]")) {
-            QString stime1 = s.mid(s.indexOf("[")+1, s.indexOf("]") - s.indexOf("[") -1);
-            QDateTime time1 = QDateTime::fromString(stime1, "yyyy-MM-dd hh:mm:ss");
-            QDateTime time2 = QDateTime::currentDateTime();
-            qint64 secs;
-            if(time1 > time2)
-                secs = time2.secsTo(time1);
-            else
-                secs = time1.secsTo(time2);
-            QTime t(0,0,0);
-            t = t.addSecs(secs);
-            qint64 days = secs/60/60/24;
-            QString sd = " ";
-            if (days != 0)
-                sd += QString::number(days) + " 天";
-            sd += t.toString(" h 时 m 分 s 秒");
-            if (time1 > time2)
-                s.insert(s.indexOf("["), tr("还有"));
-            else
-                s.insert(s.indexOf("["), tr("已经过去"));
-            QString stip = s.replace(QRegExp("\\[.*\\]"), sd);
-            m_dateTipsLabel->setText(stip.replace("\\n", "\n"));
-        } else {
-            m_dateTipsLabel->setText(s.replace("\\n", "\n"));
-        }
+        m_dateTipsLabel->setText(s);
+        //m_dateTipsLabel->setText(s.replace("\\n", "\n"));
     }
 
     const QString currentString = currentDateTime.toString("mm");
@@ -233,9 +202,9 @@ void DatetimePlugin::set()
     QHBoxLayout *hbox = new QHBoxLayout;
     QLabel *label = new QLabel(tr("Format"));
     hbox->addWidget(label);
-    QLineEdit *lineEdit_format = new QLineEdit;
-    lineEdit_format->setText(m_settings.value("format", "yyyy/M/d\\nHH:mm ddd").toString());
-    hbox->addWidget(lineEdit_format);
+    QLineEdit *lineEdit = new QLineEdit;
+    lineEdit->setText(m_settings.value("format", "yyyy/M/d\\nHH:mm ddd").toString());
+    hbox->addWidget(lineEdit);
     vbox->addLayout(hbox);
 
     hbox = new QHBoxLayout;
@@ -247,14 +216,11 @@ void DatetimePlugin::set()
 
     hbox = new QHBoxLayout;
     label = new QLabel(tr("Tooltip"));
-    hbox->addWidget(label);
-    QLineEdit *lineEdit_tooltip = new QLineEdit;
-    lineEdit_tooltip->setText(m_settings.value("tooltip", "").toString());
-    hbox->addWidget(lineEdit_tooltip);
+    hbox->addWidget(label, 0, Qt::AlignTop);
+    QTextEdit *textEdit = new QTextEdit;
+    textEdit->setText(m_settings.value("tooltip", "").toString());
+    hbox->addWidget(textEdit);
     vbox->addLayout(hbox);
-    QLineEdit *lineEdit = new QLineEdit(tr("[2020-01-25 00:00:00] format will display a count down to now"));
-    lineEdit->setReadOnly(true);
-    vbox->addWidget(lineEdit);
 
     hbox = new QHBoxLayout;
     hbox->addStretch();
@@ -267,9 +233,9 @@ void DatetimePlugin::set()
     hbox->addStretch();
     vbox->addLayout(hbox);
     dialog->setLayout(vbox);
-    if(dialog->exec() == QDialog::Accepted){
-        m_settings.setValue("format", lineEdit_format->text());
-        m_settings.setValue("tooltip", lineEdit_tooltip->text());
+    if (dialog->exec() == QDialog::Accepted) {
+        m_settings.setValue("format", lineEdit->text());
+        m_settings.setValue("tooltip", textEdit->toPlainText());
         m_centralWidget->update();
     }
     dialog->close();
